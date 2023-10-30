@@ -6,16 +6,19 @@ on:
     branches: [ "main" ]
 build-create-s3:
   runs-on: ubuntu-lastest
-  steps:
-    -name: Checking out code
-     uses: actions/checkout@v2
-    -name: Configure AWS Credencial
-     uses: aws-actions/configure-aws-credential@v2
-     with:
+    steps:
+
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+
+    - name: Connect to AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         token: ${{ secrets.TOKEN_GITHUB }}
-        aws-region: ${{ vars.REGION }}
+        aws-region: ${{ secrets.REGION }}
+        
     - name: Create Dir to S3 -source
       run: aws s3api create-bucket --bucket ${{ vars.AWS_BUCKET }} | grep -w ${{ vars.AWS_BUCKET }} >/dev/null
       env:
